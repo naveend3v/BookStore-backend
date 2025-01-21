@@ -1,11 +1,10 @@
-package com.naveend3v.bookshop.service;
+package com.naveend3v.bookshop.jwt;
 
 import com.naveend3v.bookshop.entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

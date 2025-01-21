@@ -1,7 +1,5 @@
-package com.naveend3v.bookshop.securityconfig;
+package com.naveend3v.bookshop.jwt;
 
-import com.naveend3v.bookshop.service.JwtAuthFilter;
-import com.naveend3v.bookshop.service.UserInfoUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

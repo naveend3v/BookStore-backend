@@ -1,10 +1,10 @@
-package com.naveend3v.bookshop.service;
+package com.naveend3v.bookshop.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,8 @@ import java.util.function.Function;
 @Component
 public class JwtService {
 
-    private String SECRET = "b561afebed279c23583ddfe2c9da043991caca5e3b6d535391c7367be2441c0a";
+    @Value("${jwt.secret}")
+    private String secret;
 
     public String generateToken(String username){
         Map<String,Object> claims = new HashMap<>();
@@ -35,7 +36,7 @@ public class JwtService {
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -69,6 +70,4 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
-
 }

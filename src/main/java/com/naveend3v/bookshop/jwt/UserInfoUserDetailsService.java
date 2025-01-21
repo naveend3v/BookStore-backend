@@ -1,7 +1,6 @@
-package com.naveend3v.bookshop.service;
+package com.naveend3v.bookshop.jwt;
 
 import com.naveend3v.bookshop.entity.UserInfo;
-import com.naveend3v.bookshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

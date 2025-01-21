@@ -2,8 +2,8 @@ package com.naveend3v.bookshop.controller;
 
 import com.naveend3v.bookshop.entity.*;
 import com.naveend3v.bookshop.service.BooksService;
-import com.naveend3v.bookshop.service.JwtService;
-import com.naveend3v.bookshop.service.UserInfoService;
+import com.naveend3v.bookshop.jwt.JwtService;
+import com.naveend3v.bookshop.jwt.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

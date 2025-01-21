@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.service;
+package com.naveend3v.bookshop.jwt;
 
 import com.naveend3v.bookshop.entity.UserInfo;
 
