@@ -1,39 +1,17 @@
 package com.naveend3v.bookshop.entity;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class SuccessResponse {
-    private String message;
-    private int status;
-    private long timestamp;
-
-    // Constructor
-    public SuccessResponse(String message, int status, long timestamp) {
-        this.message = message;
-        this.status = status;
-        this.timestamp = timestamp;
-    }
-
-    // Getters and Setters
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public static ResponseEntity<Object> generateResp(Object message, HttpStatus status) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("message", message);
+        map.put("status", status.value());
+        map.put("timestamp", System.currentTimeMillis());
+        return new ResponseEntity<Object>(map, status);
     }
 }

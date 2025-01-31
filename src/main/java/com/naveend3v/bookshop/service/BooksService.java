@@ -10,4 +10,5 @@ public interface BooksService {
 	Optional<Book> findByBook(Integer id);
 	Book saveBook(Book book);
 	void removeBook(Integer id);
+	Book updateBook(Book book, Integer id);
 }

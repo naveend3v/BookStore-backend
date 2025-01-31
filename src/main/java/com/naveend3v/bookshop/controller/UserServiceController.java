@@ -56,28 +56,26 @@ public class UserServiceController {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(JwtAuthRequest.getUsername(),JwtAuthRequest.getPassword()));
 
         if(auth.isAuthenticated()){
-            return new ResponseEntity<>(new AuthResponse(jwtService.generateToken(JwtAuthRequest.getUsername()),HttpStatus.OK.value(),System.currentTimeMillis()), HttpStatus.OK);
+            return AuthResponse.generateResp(jwtService.generateToken(JwtAuthRequest.getUsername()),HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ErrorResponse("User " + JwtAuthRequest.getUsername() + " not found",HttpStatus.NOT_FOUND.value(),System.currentTimeMillis()),HttpStatus.NOT_FOUND);
+            return ErrorResponse.generateResp("User " + JwtAuthRequest.getUsername() + " not found",HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/books")
-    public List<Book> getAllBooks() {
-        return booksService.findAll();
+    public ResponseEntity getAllBooks() {
+        return SuccessResponse.generateResp(booksService.findAll(),HttpStatus.OK);
     }
 
     @GetMapping("/books/{id}")
     public ResponseEntity getBooksByID(@PathVariable Integer id){
         Integer booksSize = booksService.findAll().size();
-
         Optional<Book> book = Optional.empty();
 
         if(id<=0 || id>booksSize || id == null){
-            return new ResponseEntity<>(new ErrorResponse("Book with ID " + id + " not found",HttpStatus.NOT_FOUND.value(),System.currentTimeMillis()),HttpStatus.NOT_FOUND);
+            return ErrorResponse.generateResp("Book with ID " + id + " not found",HttpStatus.NOT_FOUND);
         } else {
-            book = booksService.findByBook(id);
-            return new ResponseEntity<>(book,HttpStatus.OK);
+            return BookResponse.generateResp(booksService.findByBook(id),HttpStatus.OK);
         }
     }
 }

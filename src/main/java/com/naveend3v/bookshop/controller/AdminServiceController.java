@@ -55,45 +55,41 @@ public class AdminServiceController {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(JwtAuthRequest.getUsername(), JwtAuthRequest.getPassword()));
 
         if (auth.isAuthenticated()) {
-            return new ResponseEntity<>(new AuthResponse(jwtService.generateToken(JwtAuthRequest.getUsername()), HttpStatus.OK.value(), System.currentTimeMillis()), HttpStatus.OK);
+            return  AuthResponse.generateResp(jwtService.generateToken(JwtAuthRequest.getUsername()),HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ErrorResponse("User " + JwtAuthRequest.getUsername() + " not found", HttpStatus.NOT_FOUND.value(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+            return ErrorResponse.generateResp("User " + JwtAuthRequest.getUsername() + " not found", HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("logout")
     public ResponseEntity adminLogout() {
-        return new ResponseEntity(new SuccessResponse("Logged out successfully!", HttpStatus.OK.value(), System.currentTimeMillis()), HttpStatus.OK);
+        return AuthResponse.generateResp("Logged out successfully!", HttpStatus.OK);
     }
 
     @GetMapping("/books")
-    public List<Book> getAllBooks() {
-        return booksService.findAll();
+    public ResponseEntity getAllBooks() {
+        return SuccessResponse.generateResp(booksService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/books/{id}")
     public ResponseEntity getBooksByID(@PathVariable Integer id) {
         Optional<Book> book = booksService.findByBook(id);
         if (book.isPresent()) {
-            return new ResponseEntity(book.get(), HttpStatus.OK);
+            return BookResponse.generateResp(book.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ErrorResponse("Book with ID " + id + " not found", HttpStatus.NOT_FOUND.value(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+            return ErrorResponse.generateResp("Book with ID " + id + " not found", HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/books")
     public ResponseEntity addBook(@RequestBody Book newBook) {
-        Book bookToAdd = newBook;
-        bookToAdd = booksService.saveBook(bookToAdd);
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("book", bookToAdd);
-        return new ResponseEntity<>(bookToAdd, HttpStatus.OK);
+        return BookResponse.generateResp(booksService.saveBook(newBook), HttpStatus.OK);
     }
 
     @PostMapping("/upload/image")
     public ResponseEntity addBook(@RequestPart("file") MultipartFile file) throws IOException {
         String path = fileUploadService.uploadImageToFileSystem(file);
-        return new ResponseEntity<>(new SuccessResponse("Image uploaded successfully! - " + path, HttpStatus.OK.value(), System.currentTimeMillis()), HttpStatus.OK);
+        return SuccessResponse.generateResp("Image uploaded successfully! - " + path, HttpStatus.OK);
     }
 
     @GetMapping(value = "/download/image/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -103,18 +99,18 @@ public class AdminServiceController {
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
-        } catch (Exception e){
-            return new ResponseEntity<>(new ErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return ErrorResponse.generateResp(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/books/{id}")
-    public ResponseEntity updateBooks(@PathVariable Integer id) {
-        Book bookToUpdate = booksService.findByBook(id).get();
-        if (bookToUpdate != null)
-            return new ResponseEntity<>(booksService.saveBook(bookToUpdate), HttpStatus.OK);
-        else
-            return new ResponseEntity(new ErrorResponse("Book not found with ID " + id, HttpStatus.NOT_FOUND.value(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateBooks(@RequestBody Book book, @PathVariable Integer id) {
+        if (book != null) {
+            return BookResponse.generateResp(booksService.updateBook(book, id), HttpStatus.OK);
+        } else {
+            return ErrorResponse.generateResp("Book not found with ID " + id, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/books/{id}")
@@ -123,9 +119,9 @@ public class AdminServiceController {
         if (book.isPresent()) {
             String bookName = book.get().getBookName();
             booksService.removeBook(id);
-            return new ResponseEntity(new SuccessResponse("Book " + bookName + " deleted successfully!", HttpStatus.OK.value(), System.currentTimeMillis()), HttpStatus.OK);
+            return SuccessResponse.generateResp("Book " + bookName + " deleted successfully!", HttpStatus.OK);
         } else {
-            return new ResponseEntity(new ErrorResponse("Book not found with ID " + id, HttpStatus.NOT_FOUND.value(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
+            return ErrorResponse.generateResp("Book not found with ID " + id, HttpStatus.NOT_FOUND);
         }
     }
 }

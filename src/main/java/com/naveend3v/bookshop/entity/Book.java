@@ -48,6 +48,11 @@ public class Book {
     }
 
     // Getter and Setter
+
+    public int getId() {
+        return id;
+    }
+
     public String getBookName() {
         return bookName;
     }

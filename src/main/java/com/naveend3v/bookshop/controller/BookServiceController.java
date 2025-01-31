@@ -5,6 +5,7 @@ import com.naveend3v.bookshop.service.BooksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class BookServiceController {
 
     @GetMapping("/welcome")
     public ResponseEntity welcome() {
-        return new ResponseEntity(new SuccessResponse("Welcome to Book Store",HttpStatus.OK.value(),System.currentTimeMillis()),HttpStatus.OK);
+        return SuccessResponse.generateResp("Welcome to Book Store",HttpStatus.OK);
     }
 
 }
