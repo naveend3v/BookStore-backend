@@ -1,5 +1,6 @@
 package com.naveend3v.bookshop.controller;
 
+import com.naveend3v.bookshop.entity.BookResponse;
 import com.naveend3v.bookshop.entity.SuccessResponse;
 import com.naveend3v.bookshop.service.BooksService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class BookServiceController {
     @GetMapping("/welcome")
     public ResponseEntity welcome() {
         return SuccessResponse.generateResp("Welcome to Book Store",HttpStatus.OK);
+    }
+
+    @GetMapping("/books")
+    public ResponseEntity getAllBooks(){
+        return BookResponse.generateResp(booksService.findAll(),HttpStatus.OK);
     }
 
 }

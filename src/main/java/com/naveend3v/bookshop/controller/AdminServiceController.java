@@ -5,7 +5,9 @@ import com.naveend3v.bookshop.jwt.JwtService;
 import com.naveend3v.bookshop.jwt.UserInfoService;
 import com.naveend3v.bookshop.service.BooksService;
 import com.naveend3v.bookshop.service.FileUploadService;
+import com.naveend3v.bookshop.service.S3StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +47,9 @@ public class AdminServiceController {
 
     @Autowired
     private FileUploadService fileUploadService;
+
+    @Autowired
+    private S3StorageService s3StorageService;
 
     public AdminServiceController(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
@@ -87,21 +92,36 @@ public class AdminServiceController {
     }
 
     @PostMapping("/upload/image")
-    public ResponseEntity addBook(@RequestPart("file") MultipartFile file) throws IOException {
-        String path = fileUploadService.uploadImageToFileSystem(file);
-        return SuccessResponse.generateResp("Image uploaded successfully! - " + path, HttpStatus.OK);
+    public ResponseEntity uploadImage(@RequestPart("file") MultipartFile file) throws IOException {
+        return SuccessResponse.generateResp(s3StorageService.uploadFileToS3(file),HttpStatus.OK);
+        /*        String path = fileUploadService.uploadImageToFileSystem(file);
+        return SuccessResponse.generateResp("Image uploaded successfully! - " + path, HttpStatus.OK);*/
     }
 
-    @GetMapping(value = "/download/image/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/download/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<?> getImage(@PathVariable String imageName) throws IOException, URISyntaxException {
-        try {
+
+        byte[] data = s3StorageService.downloadFileFromS3(imageName);
+        ByteArrayResource resource = new ByteArrayResource(data);
+        return ResponseEntity
+                .ok()
+                .contentLength(data.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; filename=\"" + imageName + "\"")
+                .body(resource);
+/*        try {
             Resource resource = fileUploadService.downloadImageFromFileSystem(imageName);
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
         } catch (Exception e) {
             return ErrorResponse.generateResp(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        }*/
+    }
+
+    @DeleteMapping("/delete/{imageName}")
+    public ResponseEntity deleteImage(@PathVariable String imageName){
+        return SuccessResponse.generateResp(s3StorageService.deleteFileFromS3(imageName),HttpStatus.OK);
     }
 
     @PutMapping("/books/{id}")

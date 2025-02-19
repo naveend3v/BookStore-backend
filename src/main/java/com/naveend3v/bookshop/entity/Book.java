@@ -20,11 +20,14 @@ public class Book {
     @Column(name = "author")
     private String author;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "price")
     private double price;
 
     @Column(name = "published_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate publishedDate;
 
     @Column(name = "category")
@@ -38,9 +41,10 @@ public class Book {
     }
 
     // Parameterized constructor
-    public Book(String bookName, String author, double price, String category, String bookCoverImagePath, LocalDate publishedDate) {
+    public Book(String bookName, String author, String description, double price, String category, String bookCoverImagePath, LocalDate publishedDate) {
         this.bookName = bookName;
         this.author = author;
+        this.description = description;
         this.price = price;
         this.category = category;
         this.bookCoverImagePath = bookCoverImagePath;
@@ -67,6 +71,14 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getPrice() {
