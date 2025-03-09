@@ -16,54 +16,66 @@ import lombok.*;
 
 @Entity
 @Data
-@Table(name="users")
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
 
-	@Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-	@Column(name="id")
-	private Integer id;
-	
-	@Column(name="name")
-	private String name;
-	
-	@Column(name="password")
-	private String password;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
-	@Column(name="roles")
-	private String roles;
+    @Column(name = "name")
+    private String name;
 
-	public Integer getId() {
-		return id;
-	}
+    @Column(name = "password")
+    private String password;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @Column(name = "roles")
+    private String roles;
 
-	public String getName() {
-		return name;
-	}
+    @Column(name = "email")
+    private String email;
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
-	public String getPassword() {
-		return password;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getRoles() {
-		return roles;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

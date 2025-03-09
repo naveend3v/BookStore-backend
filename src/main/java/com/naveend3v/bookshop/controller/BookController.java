@@ -1,24 +1,23 @@
 package com.naveend3v.bookshop.controller;
 
-import com.naveend3v.bookshop.entity.BookResponse;
-import com.naveend3v.bookshop.entity.SuccessResponse;
+import com.naveend3v.bookshop.dto.response.BookResponse;
+import com.naveend3v.bookshop.dto.response.SuccessResponse;
 import com.naveend3v.bookshop.service.BooksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-public class BookServiceController {
+public class BookController {
 
     @Autowired
     private BooksService booksService;
 
-    public BookServiceController(BooksService booksService) {
+    public BookController(BooksService booksService) {
         this.booksService = booksService;
     }
 

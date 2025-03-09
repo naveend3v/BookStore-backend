@@ -1,14 +1,12 @@
-package com.naveend3v.bookshop.entity;
+package com.naveend3v.bookshop.dto.response;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BookResponse<T> {
-
+public class SuccessResponse {
     public static ResponseEntity<Object> generateResp(Object message, HttpStatus status) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("message", message);

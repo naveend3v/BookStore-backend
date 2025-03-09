@@ -1,11 +1,11 @@
 -- create a user
-CREATE USER IF NOT EXISTS 'book-user'@'%' IDENTIFIED BY 'bookstore';
+CREATE USER IF NOT EXISTS 'bookuser'@'%' IDENTIFIED BY 'bookstore';
 
 -- create a database
 CREATE DATABASE IF NOT EXISTS `bookstore`;
 
 -- Grant privilege to user
-GRANT ALL PRIVILEGES ON bookstore.* TO 'book-user'@'%';
+GRANT ALL PRIVILEGES ON bookstore.* TO 'bookuser'@'%';
 FLUSH PRIVILEGES;
 
 -- create a table

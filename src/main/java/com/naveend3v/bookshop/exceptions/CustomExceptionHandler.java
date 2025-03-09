@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.advice;
+package com.naveend3v.bookshop.exceptions;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -38,7 +38,12 @@ public class CustomExceptionHandler {
             errorDetail.setProperty("Reason","Jwt tok already expired!");
         }
 
+        if(ex instanceof CustomException){
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
+        }
         return errorDetail;
     }
+
+
 
 }

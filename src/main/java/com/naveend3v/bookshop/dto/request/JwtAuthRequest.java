@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.entity;
+package com.naveend3v.bookshop.dto.request;
 
 public class JwtAuthRequest {
 

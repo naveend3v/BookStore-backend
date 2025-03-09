@@ -1,14 +1,18 @@
 package com.naveend3v.bookshop.controller;
 
+import com.naveend3v.bookshop.dto.request.JwtAuthRequest;
+import com.naveend3v.bookshop.dto.response.AuthResponse;
+import com.naveend3v.bookshop.dto.response.BookResponse;
+import com.naveend3v.bookshop.dto.response.ErrorResponse;
+import com.naveend3v.bookshop.dto.response.SuccessResponse;
 import com.naveend3v.bookshop.entity.*;
 import com.naveend3v.bookshop.jwt.JwtService;
-import com.naveend3v.bookshop.jwt.UserInfoService;
+import com.naveend3v.bookshop.service.UserInfoService;
 import com.naveend3v.bookshop.service.BooksService;
 import com.naveend3v.bookshop.service.FileUploadService;
 import com.naveend3v.bookshop.service.S3StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminServiceController {
+public class AdminController {
 
     @Autowired
     private UserInfoService userInfoService;
@@ -51,7 +52,7 @@ public class AdminServiceController {
     @Autowired
     private S3StorageService s3StorageService;
 
-    public AdminServiceController(UserInfoService userInfoService) {
+    public AdminController(UserInfoService userInfoService) {
         this.userInfoService = userInfoService;
     }
 

@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.entity;
+package com.naveend3v.bookshop.dto.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

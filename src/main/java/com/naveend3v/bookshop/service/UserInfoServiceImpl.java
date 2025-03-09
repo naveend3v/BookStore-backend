@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.jwt;
+package com.naveend3v.bookshop.service;
 
 import com.naveend3v.bookshop.entity.UserInfo;
 import com.naveend3v.bookshop.repository.UserRepository;
@@ -21,5 +21,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public UserInfo saveUser(UserInfo userInfo) {
         return userRepository.save(userInfo);
+    }
+
+    @Override
+    public Optional<UserInfo> findById(Integer userId) {
+        return userRepository.findById(userId);
     }
 }
