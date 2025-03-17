@@ -61,6 +61,19 @@ public class UserController {
         this.userInfoService = userInfoService;
     }
 
+    public UserInfo getAuthenticatedtUser() throws CustomException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new CustomException("User is not authenticated");
+        }
+        UserInfo userInfo = userInfoService.findByName(authentication.getName()).orElse(null);
+        System.out.println("Auth user: " + authentication.getName());
+        if (userInfo == null) {
+            throw new CustomException("User not found");
+        }
+        return  userInfo;
+    }
+
     @PostMapping("/signup")
     public ResponseEntity addUser(@RequestBody UserInfo userInfo){
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
@@ -104,48 +117,25 @@ public class UserController {
 
     @PostMapping("/cart/add")
     public ResponseEntity<?> addToCart(@RequestBody AddToCartDto addToCartDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-        System.out.println("Authenticated user : " + authentication.getName());
-        cartService.addToCart(addToCartDto,userInfo);
+        cartService.addToCart(addToCartDto,getAuthenticatedtUser());
         return SuccessResponse.generateResp("Added to Cart",HttpStatus.OK);
     }
 
     @GetMapping("/cart")
     public ResponseEntity<?> getCartItems(){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-//        System.out.println("Authenticated user : " + authentication.getName());
-//        CartDto cartDto = cartService.listCartItems(userInfo);
-//        return SuccessResponse.generateResp(cartDto,HttpStatus.OK);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ErrorResponse.generateResp("User is not authenticated", HttpStatus.UNAUTHORIZED);
-        }
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).orElse(null);
-        System.out.println("Auth user: " + authentication.getName());
-        if (userInfo == null) {
-            return ErrorResponse.generateResp("User not found", HttpStatus.NOT_FOUND);
-        }
-        CartDto cartDto = cartService.listCartItems(userInfo);
+        CartDto cartDto = cartService.listCartItems(getAuthenticatedtUser());
         return SuccessResponse.generateResp(cartDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/cart/delete/{cartItemID}")
     public ResponseEntity<?> DeleteCartItem(@PathVariable Integer cartItemID){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-        System.out.println("Authenticated user : " + authentication.getName());
-        cartService.deleteCart(cartItemID,userInfo);
+        cartService.deleteCart(cartItemID,getAuthenticatedtUser());
         return SuccessResponse.generateResp("Cart deleted successfully!", HttpStatus.OK);
     }
 
     @PutMapping("/cart/update/{cartItemID}")
     public ResponseEntity<?> updateCartItem(@PathVariable Integer cartItemID, @RequestBody AddToCartDto cartDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-        System.out.println("Authenticated user : " + authentication.getName());
-        cartService.updateCartItem(userInfo,cartItemID,cartDto);
+        cartService.updateCartItem(getAuthenticatedtUser(),cartItemID,cartDto);
         return SuccessResponse.generateResp("Cart updated successfully!",HttpStatus.OK);
     }
 
@@ -158,18 +148,14 @@ public class UserController {
 
     @PostMapping("/order/add")
     public ResponseEntity<?> placeOrder(@RequestParam("sessionId") String sessionId) throws ProductNotExistException, CustomException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-        System.out.println("Authenticated user : " + authentication.getName());
+        UserInfo userInfo = getAuthenticatedtUser();
         orderService.placeOrder(userInfo.getId(),sessionId);
         return SuccessResponse.generateResp("Order has been placed!",HttpStatus.CREATED);
     }
 
     @GetMapping("/order/allOrders")
     public ResponseEntity<?> getAllOrders(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserInfo userInfo = userInfoService.findByName(authentication.getName()).get();
-        System.out.println("Authenticated user : " + authentication.getName());
+        UserInfo userInfo = getAuthenticatedtUser();
         List<Order> orderDtoList = orderService.listOrders(userInfo.getId());
         return SuccessResponse.generateResp(orderDtoList.toString(),HttpStatus.OK);
     }

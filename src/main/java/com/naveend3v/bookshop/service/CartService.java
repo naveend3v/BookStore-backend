@@ -29,22 +29,45 @@ public class CartService {
     private UserRepository userRepository;
 
     public void addToCart(AddToCartDto addToCartDto, UserInfo userInfo) {
+        // Fetch the book from the database
         Optional<Book> book = booksService.findByBook(addToCartDto.getProduct_id());
-        try {
-            if (book.isPresent()){
-            Cart cart = new Cart();
-            cart.setUserInfo(userInfo);
-            cart.setUserInfo(userInfo);
-            cart.setBook(book.get());
-            cart.setQuantity(addToCartDto.getQuantity());
-            cartRepository.save(cart);
-            } else {
-                throw new CustomException("Book with id not found : " + addToCartDto.getProduct_id());
-            }
-        } catch (Exception e){
+        if (!book.isPresent()) {
             throw new CustomException("Book with id not found : " + addToCartDto.getProduct_id());
         }
 
+        // Check if the user exists
+        if (!userRepository.existsById(userInfo.getId())) {
+            throw new CustomException("User with id not found : " + userInfo.getId());
+        }
+
+        // Fetch all cart items for the user
+        List<Cart> listOfCartForUser = cartRepository.findAllByUserInfo(userInfo);
+
+        // Flag to track if the book is already in the cart
+        boolean isBookInCart = false;
+
+        // If the user's cart is not empty, check if the book is already in the cart
+        if (!listOfCartForUser.isEmpty()) {
+            for (Cart cart : listOfCartForUser) {
+                // If the book is already in the cart, update the quantity
+                if (cart.getBook().getId() == addToCartDto.getProduct_id()) {
+                    isBookInCart = true; // Book is found in the cart
+                    Integer cartQuantity = cart.getQuantity() + addToCartDto.getQuantity();
+                    cart.setQuantity(cartQuantity);
+                    cartRepository.save(cart);
+                    break; // Exit the loop after updating the quantity
+                }
+            }
+        }
+
+        // If the book is not in the cart, add it to the cart
+        if (!isBookInCart) {
+            Cart newCart = new Cart();
+            newCart.setUserInfo(userInfo);
+            newCart.setBook(book.get());
+            newCart.setQuantity(addToCartDto.getQuantity());
+            cartRepository.save(newCart);
+        }
     }
 
     public CartDto listCartItems(UserInfo currentUserInfo) {
@@ -53,7 +76,7 @@ public class CartService {
         double totalCost = 0;
         for(Cart cart : cartList){
             CartItemsDto cartItemsDto = new CartItemsDto(cart);
-            totalCost+=cartItemsDto.getQuantity() * cart.getBook().getPrice();
+            totalCost += cartItemsDto.getQuantity() * cart.getBook().getPrice();
             cartItems.add(cartItemsDto);
         }
         CartDto cartDto = new CartDto();

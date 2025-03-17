@@ -14,4 +14,6 @@ public class StripeResponse {
     public StripeResponse(String sessionId) {
         this.sessionId = sessionId;
     }
+
+    public StripeResponse(){}
 }
