@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.entity;
+package com.naveend3v.bookshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

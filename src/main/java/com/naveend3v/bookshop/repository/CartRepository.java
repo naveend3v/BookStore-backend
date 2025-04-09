@@ -1,8 +1,7 @@
 package com.naveend3v.bookshop.repository;
 
-import com.naveend3v.bookshop.dto.cart.CartDto;
-import com.naveend3v.bookshop.entity.Cart;
-import com.naveend3v.bookshop.entity.UserInfo;
+import com.naveend3v.bookshop.model.Cart;
+import com.naveend3v.bookshop.model.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

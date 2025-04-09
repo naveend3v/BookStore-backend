@@ -1,8 +1,7 @@
 package com.naveend3v.bookshop.dto.order;
 
-import com.naveend3v.bookshop.entity.Orders;
+import com.naveend3v.bookshop.model.Orders;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 

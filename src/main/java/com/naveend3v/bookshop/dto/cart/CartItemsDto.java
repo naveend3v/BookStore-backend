@@ -1,7 +1,7 @@
 package com.naveend3v.bookshop.dto.cart;
 
-import com.naveend3v.bookshop.entity.Book;
-import com.naveend3v.bookshop.entity.Cart;
+import com.naveend3v.bookshop.model.Book;
+import com.naveend3v.bookshop.model.Cart;
 
 public class CartItemsDto {
     private Integer id;

@@ -5,7 +5,7 @@ import com.naveend3v.bookshop.dto.response.AuthResponse;
 import com.naveend3v.bookshop.dto.response.BookResponse;
 import com.naveend3v.bookshop.dto.response.ErrorResponse;
 import com.naveend3v.bookshop.dto.response.SuccessResponse;
-import com.naveend3v.bookshop.entity.*;
+import com.naveend3v.bookshop.model.*;
 import com.naveend3v.bookshop.jwt.JwtService;
 import com.naveend3v.bookshop.service.UserInfoService;
 import com.naveend3v.bookshop.service.BooksService;

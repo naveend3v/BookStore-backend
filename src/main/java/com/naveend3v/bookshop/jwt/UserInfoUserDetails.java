@@ -1,6 +1,6 @@
 package com.naveend3v.bookshop.jwt;
 
-import com.naveend3v.bookshop.entity.UserInfo;
+import com.naveend3v.bookshop.model.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

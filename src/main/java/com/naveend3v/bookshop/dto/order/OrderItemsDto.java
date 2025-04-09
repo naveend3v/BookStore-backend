@@ -1,6 +1,6 @@
 package com.naveend3v.bookshop.dto.order;
 
-import com.naveend3v.bookshop.entity.OrderItems;
+import com.naveend3v.bookshop.model.OrderItems;
 
 import javax.validation.constraints.NotNull;
 

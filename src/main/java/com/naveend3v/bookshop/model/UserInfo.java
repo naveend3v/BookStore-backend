@@ -1,4 +1,4 @@
-package com.naveend3v.bookshop.entity;
+package com.naveend3v.bookshop.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

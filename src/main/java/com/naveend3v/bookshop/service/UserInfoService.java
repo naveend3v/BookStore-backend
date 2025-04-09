@@ -1,6 +1,6 @@
 package com.naveend3v.bookshop.service;
 
-import com.naveend3v.bookshop.entity.UserInfo;
+import com.naveend3v.bookshop.model.UserInfo;
 
 import java.util.Optional;
 
