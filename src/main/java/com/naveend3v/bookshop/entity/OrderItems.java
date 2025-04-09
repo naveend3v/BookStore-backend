@@ -1,19 +1,28 @@
 package com.naveend3v.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
+import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Entity
 @Table(name="orderItems")
-public class OrderItem {
+public class OrderItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderItemId;
 
+    @Column(name="createdDate")
+    private LocalDate createdDate;
+
+    @Column(name="order_id")
+    private Integer orderId;
+
     @Column(name="book_id")
-    private Long bookId;
+    private Integer bookId;
+
+    @Column(name="book_name")
+    private String bookName;
 
     @Column(name="quantity")
     private Integer quantity;
@@ -21,28 +30,28 @@ public class OrderItem {
     @Column(name="price")
     private double price;
 
-    @Column(name="order_id")
-    private Integer orderId;
+    @Column(name="total_price")
+    private double totalPrice;
 
-    @Column(name="createdDate")
-    private Date createdDate;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="order_id",referencedColumnName = "id",insertable = false,updatable = false)
-    private Order order;
+    private Orders orders;
 
     @OneToOne
     @JoinColumn(name="book_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Book book;
 
-    public OrderItem(){}
+    public OrderItems(){}
 
-    public OrderItem(Integer orderId, @NotNull Long bookId, @NotNull int quantity, @NotNull double price){
+    public OrderItems(Integer orderId, @NotNull Integer bookId, @NotNull String bookName, @NotNull int quantity, @NotNull double price){
         this.orderId = orderId;
+        this.createdDate = LocalDate.now();
         this.bookId = bookId;
+        this.bookName = bookName;
         this.quantity = quantity;
         this.price = price;
-        this.createdDate = new Date();
+        this.totalPrice = quantity * price;
     }
 
     public Integer getOrderItemId() {
@@ -53,11 +62,11 @@ public class OrderItem {
         this.orderItemId = orderItemId;
     }
 
-    public Long getBookId() {
+    public Integer getBookId() {
         return bookId;
     }
 
-    public void setBookId(Long bookId) {
+    public void setBookId(Integer bookId) {
         this.bookId = bookId;
     }
 
@@ -85,20 +94,20 @@ public class OrderItem {
         this.orderId = orderId;
     }
 
-    public Date getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Order getOrder() {
-        return order;
+    public Orders getOrder() {
+        return orders;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrder(Orders orders) {
+        this.orders = orders;
     }
 
     public Book getBook() {
@@ -107,5 +116,29 @@ public class OrderItem {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public Orders getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Orders orders) {
+        this.orders = orders;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

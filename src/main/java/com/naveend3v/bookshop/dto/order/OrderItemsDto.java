@@ -1,37 +1,28 @@
 package com.naveend3v.bookshop.dto.order;
 
+import com.naveend3v.bookshop.entity.OrderItems;
+
 import javax.validation.constraints.NotNull;
 
 public class OrderItemsDto {
 
-    private @NotNull double price;
-    private @NotNull Integer quantity;
     private @NotNull Integer bookId;
-    private @NotNull Integer productId;
+    private @NotNull String bookName;
+    private @NotNull String bookCoverImage;
+    private @NotNull Integer quantity;
+    private @NotNull double price;
+    private @NotNull double totalPrice;
+
 
     public OrderItemsDto(){}
 
-    public OrderItemsDto(@NotNull double price,@NotNull Integer quantity,@NotNull Integer bookId,@NotNull Integer productId) {
-        this.price = price;
-        this.quantity = quantity;
-        this.bookId = bookId;
-        this.productId = productId;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public OrderItemsDto(OrderItems orderItems) {
+        this.bookId = orderItems.getBook().getId();
+        this.bookName = orderItems.getBook().getBookName();
+        this.bookCoverImage = orderItems.getBook().getBookCoverImagePath();
+        this.quantity = orderItems.getQuantity();
+        this.price = orderItems.getPrice();
+        this.totalPrice = orderItems.getTotalPrice();
     }
 
     public Integer getBookId() {
@@ -42,11 +33,43 @@ public class OrderItemsDto {
         this.bookId = bookId;
     }
 
-    public Integer getProductId() {
-        return productId;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getBookCoverImage() {
+        return bookCoverImage;
+    }
+
+    public void setBookCoverImage(String bookCoverImage) {
+        this.bookCoverImage = bookCoverImage;
     }
 }

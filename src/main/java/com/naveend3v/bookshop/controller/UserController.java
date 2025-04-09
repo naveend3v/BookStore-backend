@@ -3,6 +3,8 @@ package com.naveend3v.bookshop.controller;
 import com.naveend3v.bookshop.dto.cart.AddToCartDto;
 import com.naveend3v.bookshop.dto.cart.CartDto;
 import com.naveend3v.bookshop.dto.checkout.CheckoutItemDto;
+import com.naveend3v.bookshop.dto.order.GetOrderDetailsDto;
+import com.naveend3v.bookshop.dto.order.OrderDto;
 import com.naveend3v.bookshop.dto.request.JwtAuthRequest;
 import com.naveend3v.bookshop.dto.response.AuthResponse;
 import com.naveend3v.bookshop.dto.response.BookResponse;
@@ -87,14 +89,26 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity authenticateAndGetToken(@RequestBody JwtAuthRequest JwtAuthRequest){
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(JwtAuthRequest.getUsername(),JwtAuthRequest.getPassword()));
-
-        if(auth.isAuthenticated()){
-            return AuthResponse.generateResp(jwtService.generateToken(JwtAuthRequest.getUsername()),HttpStatus.OK);
-        } else {
-            return ErrorResponse.generateResp("User " + JwtAuthRequest.getUsername() + " not found",HttpStatus.NOT_FOUND);
+    public ResponseEntity authenticateAndGetToken(@RequestBody JwtAuthRequest jwtAuthRequest){
+        if (jwtAuthRequest.getUsername() == null || jwtAuthRequest.getUsername().length() <= 0 || jwtAuthRequest.getPassword() == null || jwtAuthRequest.getPassword().length() <= 0) {
+            return ErrorResponse.generateResp("Username or password cannot be empty!", HttpStatus.BAD_REQUEST);
         }
+
+        Optional<UserInfo> user = userInfoService.findByName(jwtAuthRequest.getUsername());
+
+        if(user.isEmpty()){
+            return ErrorResponse.generateResp("Invalid username or password", HttpStatus.NOT_FOUND);
+        }
+
+        if(user.isPresent() && user.get().getRoles().contains("ROLE_USER")){
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword()));
+            if (auth.isAuthenticated()) {
+                return AuthResponse.generateResp(jwtService.generateToken(jwtAuthRequest.getUsername()),HttpStatus.OK);
+            }
+        } else {
+            return ErrorResponse.generateResp("User is not an Admin!", HttpStatus.UNAUTHORIZED);
+        }
+        return ErrorResponse.generateResp("Invalid username or password", HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/books")
@@ -147,16 +161,16 @@ public class UserController {
     }
 
     @PostMapping("/order/add")
-    public ResponseEntity<?> placeOrder(@RequestParam("sessionId") String sessionId) throws ProductNotExistException, CustomException {
+    public ResponseEntity<?> placeOrder(@RequestBody StripeResponse stripeResponse) throws ProductNotExistException, CustomException {
         UserInfo userInfo = getAuthenticatedtUser();
-        orderService.placeOrder(userInfo.getId(),sessionId);
-        return SuccessResponse.generateResp("Order has been placed!",HttpStatus.CREATED);
+        orderService.placeOrder(userInfo,stripeResponse.getSessionId());
+        return SuccessResponse.generateResp("Orders has been placed!",HttpStatus.CREATED);
     }
 
     @GetMapping("/order/allOrders")
-    public ResponseEntity<?> getAllOrders(){
+    public ResponseEntity<?> getAllOrdersForUser(){
         UserInfo userInfo = getAuthenticatedtUser();
-        List<Order> orderDtoList = orderService.listOrders(userInfo.getId());
-        return SuccessResponse.generateResp(orderDtoList.toString(),HttpStatus.OK);
+        List<OrderDto> ordersDtoList = orderService.getUserOrders(userInfo.getId());
+        return SuccessResponse.generateResp(ordersDtoList,HttpStatus.OK);
     }
 }

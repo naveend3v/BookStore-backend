@@ -1,17 +1,15 @@
 package com.naveend3v.bookshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.naveend3v.bookshop.dto.order.PlaceOrderDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name="order")
-public class Order {
+@Table(name="orders")
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,28 +19,29 @@ public class Order {
     private @NotBlank Integer userId;
 
     @Column(name = "created_date")
-    private Date createdDate;
+    private LocalDate createdDate;
 
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @Column(name = "session-id")
+    @Column(name = "session_id")
     private String sessionId;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "order_id",referencedColumnName = "id",insertable = false,updatable = false)
-    private List<OrderItem> orderItems;
+    private List<OrderItems> orderItems;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserInfo userInfo;
 
-    public Order() {
+    public Orders() {
     }
 
-    public Order(PlaceOrderDto orderDto, int userId, String sessionId){
+    public Orders(PlaceOrderDto orderDto, int userId, String sessionId){
         this.userId = userId;
-        this.createdDate = new Date();
+        this.createdDate = LocalDate.now();
         this.totalPrice = orderDto.getTotalPrice();
         this.sessionId = sessionId;
     }
@@ -71,11 +70,11 @@ public class Order {
         this.userId = userId;
     }
 
-    public Date getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -87,11 +86,11 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public List<OrderItem> getOrderItems() {
+    public List<OrderItems> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItems(List<OrderItems> orderItems) {
         this.orderItems = orderItems;
     }
 

@@ -1,9 +1,13 @@
 package com.naveend3v.bookshop.service;
 
 import com.naveend3v.bookshop.dto.cart.CartDto;
+import com.naveend3v.bookshop.dto.cart.CartItemsDto;
 import com.naveend3v.bookshop.dto.checkout.CheckoutItemDto;
-import com.naveend3v.bookshop.dto.order.PlaceOrderDto;
-import com.naveend3v.bookshop.entity.Order;
+import com.naveend3v.bookshop.dto.order.GetOrderDetailsDto;
+import com.naveend3v.bookshop.dto.order.OrderDto;
+import com.naveend3v.bookshop.entity.OrderItems;
+import com.naveend3v.bookshop.entity.Orders;
+import com.naveend3v.bookshop.entity.UserInfo;
 import com.naveend3v.bookshop.repository.OrderRepository;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -14,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -81,32 +87,41 @@ public class OrderService {
                 ).build();
     }
 
-    public void placeOrder(int userId, String sessionId){
-        CartDto cartDto = cartService.listCartItems(userInfoService.findById(userId).get());
-        
-        PlaceOrderDto placeOrderDto = new PlaceOrderDto();
-        placeOrderDto.setUserId(userId);
-        placeOrderDto.setTotalPrice((cartDto.getTotalCost()));
-        
-        int orderId = saveOrder(placeOrderDto,userId,sessionId);
-        
+    public void placeOrder(UserInfo userInfo, String sessionId){
+
+        CartDto cartDto = cartService.listCartItems(userInfo);
+
+        List<CartItemsDto> cartItemDtoList = cartDto.getCartItemsDto();
+
+        Orders newOrders = new Orders();
+        newOrders.setUserId(userInfo.getId());
+        newOrders.setCreatedDate(LocalDate.now());
+        newOrders.setTotalPrice(cartDto.getTotalCost());
+        newOrders.setSessionId(sessionId);
+        orderRepository.save(newOrders);
+
+        for (CartItemsDto cartItemDto : cartItemDtoList) {
+            // create orderItem and save each one
+            OrderItems orderItem = new OrderItems();
+            orderItem.setOrderId(newOrders.getId());
+            orderItem.setCreatedDate(LocalDate.now());
+            orderItem.setBookId(cartItemDto.getBook().getId());
+            orderItem.setBookName(cartItemDto.getBook().getBookName());
+            orderItem.setQuantity(cartItemDto.getQuantity());
+            orderItem.setPrice(cartItemDto.getBook().getPrice());
+            orderItem.setTotalPrice(cartItemDto.getQuantity() * cartItemDto.getBook().getPrice());
+            // add to order item list
+            orderItemsService.addOrderedBooks(orderItem);
+        }
+        //
+        cartService.deleteUserCartItems(userInfo);
     }
 
-    public int saveOrder(PlaceOrderDto orderDto, int userId, String sessionId) {
-        Order order = getOrderFromDto(orderDto,userId,sessionId);
-        return orderRepository.save(order).getId();
+    public List<OrderDto> getUserOrders(int userId) {
+
+        List<Orders> orders = orderRepository.findAllByUserId(userId);
+        return orders.stream()
+                .map(OrderDto::new)
+                .collect(Collectors.toList());
     }
-
-    public Order getOrderFromDto(PlaceOrderDto orderDto, int userId, String sessionId){
-        Order order = new Order(orderDto, userId, sessionId);
-        return  order;
-    }
-
-
-    public List<Order> listOrders(int userId){
-        List<Order> orderList = orderRepository.findAllByUserIdOrderByCreatedDateDesc(userId);
-        return orderList;
-    }
-
-
 }

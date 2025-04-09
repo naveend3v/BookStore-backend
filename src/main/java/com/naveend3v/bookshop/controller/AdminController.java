@@ -57,14 +57,28 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity adminLogin(@RequestBody JwtAuthRequest JwtAuthRequest) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(JwtAuthRequest.getUsername(), JwtAuthRequest.getPassword()));
+    public ResponseEntity adminLogin(@RequestBody JwtAuthRequest jwtAuthRequest) {
 
-        if (auth.isAuthenticated()) {
-            return  AuthResponse.generateResp(jwtService.generateToken(JwtAuthRequest.getUsername()),HttpStatus.OK);
-        } else {
-            return ErrorResponse.generateResp("User " + JwtAuthRequest.getUsername() + " not found", HttpStatus.NOT_FOUND);
+        if (jwtAuthRequest.getUsername() == null || jwtAuthRequest.getUsername().length() <= 0 || jwtAuthRequest.getPassword() == null || jwtAuthRequest.getPassword().length() <= 0) {
+            return ErrorResponse.generateResp("Username or password cannot be empty!", HttpStatus.BAD_REQUEST);
         }
+
+        Optional<UserInfo> user = userInfoService.findByName(jwtAuthRequest.getUsername());
+
+        if(user.isEmpty()){
+            return ErrorResponse.generateResp("Invalid username or password", HttpStatus.NOT_FOUND);
+        }
+
+        if(user.isPresent() && user.get().getRoles().contains("ROLE_ADMIN")){
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuthRequest.getUsername(), jwtAuthRequest.getPassword()));
+            if (auth.isAuthenticated()) {
+                return AuthResponse.generateResp(jwtService.generateToken(jwtAuthRequest.getUsername()),HttpStatus.OK);
+            }
+        } else {
+            return ErrorResponse.generateResp("User is not an Admin!", HttpStatus.UNAUTHORIZED);
+        }
+
+        return ErrorResponse.generateResp("Invalid username or password", HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("logout")

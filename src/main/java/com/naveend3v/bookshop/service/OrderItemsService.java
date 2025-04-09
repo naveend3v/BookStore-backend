@@ -1,6 +1,6 @@
 package com.naveend3v.bookshop.service;
 
-import com.naveend3v.bookshop.entity.OrderItem;
+import com.naveend3v.bookshop.entity.OrderItems;
 import com.naveend3v.bookshop.repository.OrderItemsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class OrderItemsService {
     @Autowired
     private OrderItemsRepository orderItemsRepository;
 
-    public void addOrderedBooks(OrderItem orderItem){
+    public void addOrderedBooks(OrderItems orderItem){
         orderItemsRepository.save(orderItem);
     }
 }

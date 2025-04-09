@@ -111,4 +111,18 @@ public class CartService {
             throw new CustomException("Cart doesn't belong to user with cart id : " + cartItemID);
         }
     }
+
+    public void deleteCartItem(int id,int userId) throws CustomException {
+        if (!cartRepository.existsById(id))
+            throw new CustomException("Cart id is invalid : " + id);
+        cartRepository.deleteById(id);
+    }
+
+    public void deleteCartItems(int userId) {
+        cartRepository.deleteAll();
+    }
+
+    public void deleteUserCartItems(UserInfo userInfo) {
+        cartRepository.deleteByUserInfo(userInfo);
+    }
 }
